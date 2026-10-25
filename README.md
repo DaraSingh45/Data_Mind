@@ -193,3 +193,6 @@ cd backend && python -m pytest -q
 ## License
 
 MIT
+
+## Developer
+Developed by Dara Singh
