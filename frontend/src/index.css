@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Tokens. Colour carries meaning in the agent view:                   */
+/*   signal (amber) = working now · mind (violet) = needs you / LLM      */
+/*   ok (teal) = done · bad (coral) = failed                             */
+/* ------------------------------------------------------------------ */
+:root,
+[data-theme="dark"] {
+  --bg: #0d1220;
+  --bg-glow: #151d38;
+  --surface: #141b2e;
+  --surface-2: #1b2440;
+  --surface-3: #222c4d;
+  --line: #263152;
+  --line-strong: #34406a;
+  --text: #e7eaf3;
+  --muted: #8e98b3;
+  --faint: #5e6888;
+  --signal: #ffb547;
+  --mind: #9b8cff;
+  --ok: #3ccfae;
+  --bad: #ff6b7a;
+  --info: #5fb3ff;
+  --shadow: 0 18px 50px -20px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #f4f5fa;
+  --bg-glow: #e8e9f8;
+  --surface: #ffffff;
+  --surface-2: #eef0f8;
+  --surface-3: #e3e7f3;
+  --line: #dadfec;
+  --line-strong: #c3cade;
+  --text: #141a2e;
+  --muted: #5d6785;
+  --faint: #8c95ad;
+  --signal: #c97c00;
+  --mind: #6c5ce7;
+  --ok: #0e9f7e;
+  --bad: #e5484d;
+  --info: #1f7ae0;
+  --shadow: 0 18px 40px -24px rgb(30 40 80 / 0.35);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-signal: var(--signal);
+  --color-mind: var(--mind);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --color-info: var(--info);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The faint field of dots behind every page: the "mind" the agent works in. */
+.app-backdrop {
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--line-strong) 55%, transparent) 1px, transparent 0);
+  background-size: 26px 26px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--mind) 35%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--mind);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--mind);
+}
+.input::placeholder {
+  color: var(--faint);
+}
+select.input {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2rem;
+}
+
+.prose-dm p {
+  margin: 0 0 0.5em;
+}
+.prose-dm p:last-child {
+  margin-bottom: 0;
+}
+.prose-dm strong {
+  color: var(--text);
+  font-weight: 650;
+}
+.prose-dm em {
+  color: var(--mind);
+  font-style: normal;
+}
+.prose-dm ul {
+  margin: 0.3em 0;
+  padding-left: 1.1em;
+}
+.prose-dm code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--surface-3);
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+}
+
+/* ---------------- agent graph ---------------- */
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+.react-flow__controls {
+  box-shadow: none !important;
+}
+.react-flow__controls-button {
+  background: var(--surface-2) !important;
+  border-color: var(--line) !important;
+  fill: var(--muted) !important;
+}
+
+@keyframes spin-ring {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--pulse) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--pulse) 0%, transparent);
+  }
+}
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.stage-node {
+  position: relative;
+  border-radius: 16px;
+  isolation: isolate;
+}
+.stage-node.running {
+  --pulse: var(--signal);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+.stage-node.waiting {
+  --pulse: var(--mind);
+  animation: breathe 1.3s ease-in-out infinite;
+}
+.stage-node .ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 17px;
+  z-index: -1;
+  overflow: hidden;
+}
+.stage-node .ring::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--ring-color) 75%, transparent 92%);
+  animation: spin-ring 1.4s linear infinite;
+}
+.edge-active {
+  stroke-dasharray: 8 4;
+  animation: dash-flow 0.6s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 8px;
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.chat-scroll { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.chat-scroll::-webkit-scrollbar { width: 8px; }
+.chat-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+.chat-scroll::-webkit-scrollbar-thumb:hover { background: var(--faint); }
